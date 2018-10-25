@@ -7,9 +7,10 @@
 last_in_each_group(first_indices)
 }
 \arguments{
-\item{n}{first_indices first index of each item (in order).}
-
-\item{vector}{of last indices}
+\item{first_indices}{first index of each item (in order).}
+}
+\value{
+vector of last indices
 }
 \description{
 Build the indexes of last indexes for each group

@@ -7,6 +7,8 @@
 mark_first_in_each_group(data, group_cols)
 }
 \arguments{
+\item{data}{a data.frame ordered with respect to groups}
+
 \item{group_cols}{character names of the grouping columns}
 }
 \value{

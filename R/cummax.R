@@ -56,7 +56,7 @@ max_g <- function(col, first_indices, na.rm = FALSE) {
   last_indices <- last_in_each_group(first_indices)
   res <- cmx[last_indices]
   if(!na.rm) {
-    res[group_na_mask(col)] <- NA
+    res[group_na_mask(col, first_indices)] <- NA
   }
   res
 }

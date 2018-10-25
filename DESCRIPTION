@@ -1,14 +1,14 @@
 Package: FastBaseR
 Type: Package
-Title: Fast grouped opertions in base R.
+Title: Fast grouped opertions in base R
 Version: 0.1.0
 Authors@R: c(
     person("John", "Mount", email = "jmount@win-vector.com", role = c("aut", "cre")),
     person(family = "Win-Vector LLC", role = c("cph"))
     )
 Maintainer: John Mount <jmount@win-vector.com>
-Description: Demonstrate fast grouped calculations using only R.
-License: What license is it under?
+Description: Demonstrate fast grouped running calculations using only R.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.1.0

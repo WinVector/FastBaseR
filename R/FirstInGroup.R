@@ -2,7 +2,7 @@
 
 #' Mark the first row in each group of rows.
 #'
-#' @prarm data a data.frame ordered with respect to groups
+#' @param data a data.frame ordered with respect to groups
 #' @param group_cols character names of the grouping columns
 #' @return numeric vector with index of first row in each group
 #'
@@ -47,8 +47,8 @@ mark_first_in_each_group <- function(data, group_cols) {
 
 #' Build the indexes of last indexes for each group
 #'
-#' @param n first_indices first index of each item (in order).
-#' @param vector of last indices
+#' @param first_indices first index of each item (in order).
+#' @return vector of last indices
 #'
 #' @examples
 #'
