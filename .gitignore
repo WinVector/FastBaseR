@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.DS_Store
+*~
+#*
+*#
+rsconnect
+inst/doc
+revdep
