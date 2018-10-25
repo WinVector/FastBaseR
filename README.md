@@ -10,11 +10,11 @@ Timing example [here](https://github.com/WinVector/Examples/blob/master/grouped_
 
 Currently implements:
 
--   grouped cumulative sum.
--   grouped sum.
--   grouped running maximum.
--   grouped maximum.
--   grouped argmax.
+-   [grouped cumulative sum](https://winvector.github.io/FastBaseR/reference/cumsum_g.html).
+-   [grouped sum](https://winvector.github.io/FastBaseR/reference/index.html).
+-   [grouped running maximum](https://winvector.github.io/FastBaseR/reference/cummax_g.html).
+-   [grouped maximum](https://winvector.github.io/FastBaseR/reference/max_g.html).
+-   [grouped argmax](https://winvector.github.io/FastBaseR/reference/argmax_g.html).
 
 Todo:
 
