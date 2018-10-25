@@ -3,6 +3,8 @@ title: "grouped_sum_timing.Rmd"
 output: github_document
 ---
 
+Example using [`FastBaseR`](https://github.com/WinVector/FastBaseR).
+
 ```{r def}
 library("dplyr")
 packageVersion("dplyr")
