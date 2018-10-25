@@ -13,6 +13,7 @@ packageVersion("data.table")
 library("microbenchmark")
 library("WVPlots")
 library("FastBaseR")
+library("rqdatatable")
 
 f_base_R_split <- function(data) {
   # first sort the data
@@ -52,7 +53,6 @@ f_data.table <- function(data) {
   setorderv(data_data.table, c("x", "y"), order = -1L)
   # apply operation in each x-defined group
   data_data.table[ , running_y_sum := cumsum(y), by = "x"]
-  
   data_data.table[]
 }
 
@@ -64,6 +64,18 @@ f_dplyr <- function(data) {
     ungroup(.)
 }
 
+f_rqdatatable <- function(data) {
+  data %.>%
+    extend_nse(data,
+               running_y_sum = cumsum(y),
+               partitionby = "x",
+               orderby = "y",
+               reverse = "y") %.>%
+    orderby(.,
+            cols = c("x", "y", "running_y_sum"),
+            reverse = c("x", "y", "running_y_sum"))
+}
+
 data <- wrapr::build_frame(
    "x", "y" |
    1  , 1   |
@@ -73,11 +85,27 @@ data <- wrapr::build_frame(
    0  , 0   |
    1  , 1   )
 
+sort_vi <- function(vi, expected_cols) {
+  vi <- data.frame(vi)
+  if(is.null(expected_cols)) {
+    expected_cols <- sort(colnames(vi))
+  } else {
+    if(!isTRUE(all.equal(sort(colnames(vi)), 
+                         sort(expected_cols)))) {
+      stop("colnames not as expected")
+    }
+  }
+  vi <- vi[ , expected_cols]
+  vi <- vi[wrapr::orderv(vi), , drop = FALSE]
+  rownames(vi) <- NULL
+  vi
+}
+
 my_check <- function(values) {
-  v1 <- data.frame(values[[1]])
+  v1 <- sort_vi(values[[1]], NULL)
   all(vapply(values[-1], 
              function(x) {
-               isTRUE(all.equal(v1, data.frame(x)))
+               isTRUE(all.equal(v1, sort_vi(x, colnames(v1))))
              },
              logical(1)))
 }
@@ -86,7 +114,8 @@ lst <- list(
   base_R_split = f_base_R_split(data),
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
-  dplyr = f_dplyr(data))
+  dplyr = f_dplyr(data),
+  rqdatatable = f_rqdatatable(data))
 
 print(lst)
 
@@ -104,7 +133,8 @@ lst <- list(
   base_R_split = f_base_R_split(data),
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
-  dplyr = f_dplyr(data))
+  dplyr = f_dplyr(data),
+  qdatatable = f_rqdatatable(data))
 my_check(lst)
 lst <- NULL
 
@@ -114,6 +144,7 @@ timing <- microbenchmark(
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
   dplyr = f_dplyr(data),
+  rqdatatable = f_rqdatatable(data),
   times = 10L
 )
 

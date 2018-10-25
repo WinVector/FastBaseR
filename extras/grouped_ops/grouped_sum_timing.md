@@ -45,7 +45,12 @@ packageVersion("data.table")
 library("microbenchmark")
 library("WVPlots")
 library("FastBaseR")
+library("rqdatatable")
+```
 
+    ## Loading required package: rquery
+
+``` r
 f_base_R_split <- function(data) {
   # first sort the data
   order_index <- with(data, 
@@ -84,7 +89,6 @@ f_data.table <- function(data) {
   setorderv(data_data.table, c("x", "y"), order = -1L)
   # apply operation in each x-defined group
   data_data.table[ , running_y_sum := cumsum(y), by = "x"]
-  
   data_data.table[]
 }
 
@@ -96,6 +100,18 @@ f_dplyr <- function(data) {
     ungroup(.)
 }
 
+f_rqdatatable <- function(data) {
+  data %.>%
+    extend_nse(data,
+               running_y_sum = cumsum(y),
+               partitionby = "x",
+               orderby = "y",
+               reverse = "y") %.>%
+    orderby(.,
+            cols = c("x", "y", "running_y_sum"),
+            reverse = c("x", "y", "running_y_sum"))
+}
+
 data <- wrapr::build_frame(
    "x", "y" |
    1  , 1   |
@@ -105,11 +121,27 @@ data <- wrapr::build_frame(
    0  , 0   |
    1  , 1   )
 
+sort_vi <- function(vi, expected_cols) {
+  vi <- data.frame(vi)
+  if(is.null(expected_cols)) {
+    expected_cols <- sort(colnames(vi))
+  } else {
+    if(!isTRUE(all.equal(sort(colnames(vi)), 
+                         sort(expected_cols)))) {
+      stop("colnames not as expected")
+    }
+  }
+  vi <- vi[ , expected_cols]
+  vi <- vi[wrapr::orderv(vi), , drop = FALSE]
+  rownames(vi) <- NULL
+  vi
+}
+
 my_check <- function(values) {
-  v1 <- data.frame(values[[1]])
+  v1 <- sort_vi(values[[1]], NULL)
   all(vapply(values[-1], 
              function(x) {
-               isTRUE(all.equal(v1, data.frame(x)))
+               isTRUE(all.equal(v1, sort_vi(x, colnames(v1))))
              },
              logical(1)))
 }
@@ -118,7 +150,8 @@ lst <- list(
   base_R_split = f_base_R_split(data),
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
-  dplyr = f_dplyr(data))
+  dplyr = f_dplyr(data),
+  rqdatatable = f_rqdatatable(data))
 
 print(lst)
 ```
@@ -160,6 +193,15 @@ print(lst)
     ## 4     0     1             1
     ## 5     0     0             1
     ## 6     0     0             1
+    ## 
+    ## $rqdatatable
+    ##    x y running_y_sum
+    ## 1: 1 1             2
+    ## 2: 1 1             1
+    ## 3: 1 0             2
+    ## 4: 0 1             1
+    ## 5: 0 0             1
+    ## 6: 0 0             1
 
 ``` r
 my_check(lst)
@@ -178,7 +220,8 @@ lst <- list(
   base_R_split = f_base_R_split(data),
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
-  dplyr = f_dplyr(data))
+  dplyr = f_dplyr(data),
+  qdatatable = f_rqdatatable(data))
 my_check(lst)
 ```
 
@@ -193,6 +236,7 @@ timing <- microbenchmark(
   base_R_running = f_base_R_running(data),
   data.table = f_data.table(data),
   dplyr = f_dplyr(data),
+  rqdatatable = f_rqdatatable(data),
   times = 10L
 )
 
@@ -201,15 +245,17 @@ print(timing)
 
     ## Unit: milliseconds
     ##            expr        min         lq       mean     median         uq
-    ##    base_R_split 12650.9977 14041.3320 14417.0595 14341.4191 15309.4664
-    ##  base_R_running   400.1429   422.6459   652.3276   510.1481   859.6739
-    ##      data.table   158.5339   163.0760   195.0300   164.5713   184.1905
-    ##           dplyr  2227.6616  2296.3252  2638.2539  2380.4040  2974.8971
-    ##         max neval cld
-    ##  16411.9355    10   c
-    ##   1169.7952    10 a  
-    ##    404.3589    10 a  
-    ##   3653.6679    10  b
+    ##    base_R_split 13121.3400 13962.0558 14304.3326 14266.4050 14802.3283
+    ##  base_R_running   406.5448   434.9965   757.3621   532.6069  1135.2956
+    ##      data.table   156.3390   162.2644   176.8735   170.0157   194.8812
+    ##           dplyr  2200.4221  2269.5243  2687.6506  2817.9205  2956.5787
+    ##     rqdatatable   214.4377   228.5414   348.5213   242.8017   472.2641
+    ##         max neval  cld
+    ##  15106.3294    10    d
+    ##   1471.5736    10  b  
+    ##    203.8281    10 a   
+    ##   3354.0826    10   c 
+    ##    762.9988    10 ab
 
 ``` r
 tm <- as.data.frame(timing)
