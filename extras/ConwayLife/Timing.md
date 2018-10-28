@@ -9,7 +9,7 @@ library("WVPlots")
 life_step_scalar <- function(d) {
   nrow <- dim(d)[[1]]
   ncol <- dim(d)[[2]]
-  dnext <- d
+  dnext <- matrix(data = FALSE, nrow = nrow, ncol = ncol)
   for(i in seq_len(nrow)) {
     for(j in seq_len(ncol)) {
       pop <- 0
@@ -37,7 +37,7 @@ life_step_scalar <- function(d) {
           pop <- pop + d[i+1, j+1]
         }
       }
-      dnext[i,j] <- (pop==3) | (d[i,j] & (pop>=2) & (pop<=3))
+      dnext[i,j] <- (pop==3) || (d[i,j] & (pop>=2) & (pop<=3))
     }
   }
   dnext
@@ -69,12 +69,12 @@ print(timing)
 ```
 
     ## Unit: milliseconds
-    ##              expr       min        lq      mean   median        uq
-    ##  life_step_scalar 2465.5321 2484.6832 2528.1573 2488.318 2595.8243
-    ##  life_step_vector  136.7932  142.3746  181.2697  149.575  257.7223
-    ##       max neval cld
-    ##  2700.931    10   b
-    ##   266.507    10  a
+    ##              expr      min        lq      mean    median        uq
+    ##  life_step_scalar 2267.666 2398.6398 2667.4922 2582.4812 2982.7465
+    ##  life_step_vector  136.746  148.9997  214.6675  165.7251  293.2285
+    ##        max neval cld
+    ##  3259.3728    10   b
+    ##   366.2386    10  a
 
 ``` r
 tm <- data.frame(timing)

@@ -11,7 +11,7 @@ library("WVPlots")
 life_step_scalar <- function(d) {
   nrow <- dim(d)[[1]]
   ncol <- dim(d)[[2]]
-  dnext <- d
+  dnext <- matrix(data = FALSE, nrow = nrow, ncol = ncol)
   for(i in seq_len(nrow)) {
     for(j in seq_len(ncol)) {
       pop <- 0
@@ -39,7 +39,7 @@ life_step_scalar <- function(d) {
           pop <- pop + d[i+1, j+1]
         }
       }
-      dnext[i,j] <- (pop==3) | (d[i,j] & (pop>=2) & (pop<=3))
+      dnext[i,j] <- (pop==3) || (d[i,j] & (pop>=2) & (pop<=3))
     }
   }
   dnext
