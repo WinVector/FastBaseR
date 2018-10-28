@@ -39,7 +39,7 @@ life_step_scalar <- function(d) {
           pop <- pop + d[i+1, j+1]
         }
       }
-      dnext[i,j] <- (pop==3) || (d[i,j] & (pop>=2) & (pop<=3))
+      dnext[i,j] <- (pop==3) || (d[i,j] && (pop>=2) && (pop<=3))
     }
   }
   dnext

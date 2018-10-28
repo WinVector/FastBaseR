@@ -37,7 +37,7 @@ life_step_scalar <- function(d) {
           pop <- pop + d[i+1, j+1]
         }
       }
-      dnext[i,j] <- (pop==3) || (d[i,j] & (pop>=2) & (pop<=3))
+      dnext[i,j] <- (pop==3) || (d[i,j] && (pop>=2) && (pop<=3))
     }
   }
   dnext
@@ -69,12 +69,12 @@ print(timing)
 ```
 
     ## Unit: milliseconds
-    ##              expr      min        lq     mean   median        uq       max
-    ##  life_step_scalar 2257.312 2266.5480 2311.046 2286.811 2332.8665 2419.6727
-    ##  life_step_vector  136.705  147.7335  192.692  154.561  263.6966  271.3468
-    ##  neval cld
-    ##     10   b
-    ##     10  a
+    ##              expr       min        lq      mean    median        uq
+    ##  life_step_scalar 2029.0125 2112.1260 2171.9502 2183.8286 2235.2899
+    ##  life_step_vector  147.1402  155.6901  211.5314  223.8249  258.3808
+    ##        max neval cld
+    ##  2276.4587    10   b
+    ##   267.0621    10  a
 
 ``` r
 tm <- data.frame(timing)
