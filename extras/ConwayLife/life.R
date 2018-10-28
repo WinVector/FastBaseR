@@ -3,6 +3,7 @@
 # https://www.r-bloggers.com/animated-plots-with-r/
 
 
+library("FastBaseR")
 
 grid_size = 200
 d <- matrix(data = FALSE, nrow = grid_size, ncol = grid_size)
@@ -52,16 +53,15 @@ OO.OOOO.OO
 "
 reflector <- read_cells(reflector_txt)
 
-d <- write_mat_region(d, 20, 20, glider_gun)
-d <- write_mat_region(d, 80, 20, glider_gun)
-d <- write_mat_region(d, 120, 20, glider_gun)
-d <- write_mat_region(d, 20, grid_size - 20, mwss)
-d <- write_mat_region(d, 60, grid_size - 20, mwss)
-d <- write_mat_region(d, 100, grid_size - 20, mwss)
-d <- write_mat_region(d, grid_size - 15, grid_size - 20, reflector)
-d <- write_mat_region(d, grid_size - 50, grid_size - 50, reflector)
-d <- write_mat_region(d, grid_size - 100, grid_size - 50, reflector)
-d <- write_mat_region(d, grid_size - 50, grid_size - 100, reflector)
+set.seed(3225)
+for(rep in 1:10) {
+  for(pat in list(glider_gun, mwss, reflector)) {
+    width = max(dim(pat))
+    i <- sample.int(grid_size - width, size = 1)
+    j <- sample.int(grid_size - width, size = 1)
+    d <- write_mat_region(d, i, j, pat)
+  }
+}
 
 
 # https://stackoverflow.com/questions/28035831/how-to-build-a-crossword-like-plot-for-a-boolean-matrix
