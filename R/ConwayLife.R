@@ -1,10 +1,10 @@
 
 
-#' Forward sep a square matrix one iteration of Conway's come of life.
+#' Forward step a matrix one iteration of Conway's come of life.
 #'
 #' Assumes zero-padded on all sides.
 #'
-#' @param d a square matrix logical values
+#' @param d a matrix of logical values
 #' @return next step matrix
 #'
 #' @seealso \code{\link{read_cells}}, \code{\link{write_mat_region}}
@@ -27,15 +27,16 @@
 #'
 life_step <- function(d) {
   # form the neighboring sums
-  n <- dim(d)[[1]]
+  nrow <- dim(d)[[1]]
+  ncol <- dim(d)[[2]]
   d_eu <- rbind(d[-1, , drop = FALSE], 0)
-  d_ed <- rbind(0, d[-n, , drop = FALSE])
+  d_ed <- rbind(0, d[-nrow, , drop = FALSE])
   d_le <- cbind(d[ , -1, drop = FALSE], 0)
-  d_re <- cbind(0, d[ , -n, drop = FALSE])
+  d_re <- cbind(0, d[ , -ncol, drop = FALSE])
   d_lu <- cbind(d_eu[ , -1, drop = FALSE], 0)
-  d_ru <- cbind(0, d_eu[ , -n, drop = FALSE])
+  d_ru <- cbind(0, d_eu[ , -ncol, drop = FALSE])
   d_ld <- cbind(d_ed[ , -1, drop = FALSE], 0)
-  d_rd <- cbind(0, d_ed[ , -n, drop = FALSE])
+  d_rd <- cbind(0, d_ed[ , -ncol, drop = FALSE])
   pop <- d_eu + d_ed + d_le + d_re + d_lu + d_ru + d_ld + d_rd
   d <- (pop==3) | (d & (pop>=2) & (pop<=3))
   d

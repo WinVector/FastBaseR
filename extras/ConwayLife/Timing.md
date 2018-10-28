@@ -69,12 +69,12 @@ print(timing)
 ```
 
     ## Unit: milliseconds
-    ##              expr      min        lq      mean    median        uq
-    ##  life_step_scalar 2267.666 2398.6398 2667.4922 2582.4812 2982.7465
-    ##  life_step_vector  136.746  148.9997  214.6675  165.7251  293.2285
-    ##        max neval cld
-    ##  3259.3728    10   b
-    ##   366.2386    10  a
+    ##              expr      min        lq     mean   median        uq       max
+    ##  life_step_scalar 2257.312 2266.5480 2311.046 2286.811 2332.8665 2419.6727
+    ##  life_step_vector  136.705  147.7335  192.692  154.561  263.6966  271.3468
+    ##  neval cld
+    ##     10   b
+    ##     10  a
 
 ``` r
 tm <- data.frame(timing)
