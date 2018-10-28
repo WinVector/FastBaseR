@@ -1,0 +1,71 @@
+---
+title: "life_example"
+output: github_document
+---
+
+```{r}
+
+
+# https://www.r-bloggers.com/animated-plots-with-r/
+
+
+library("FastBaseR")
+
+set.seed(32523)
+grid_size = 200
+d <- matrix(data = runif(grid_size*grid_size)<=2.5/9, 
+            nrow = grid_size, ncol = grid_size)
+# cm <- matrix(data = rnorm(grid_size*grid_size), 
+#             nrow = grid_size, ncol = grid_size)
+plt_size = 5*grid_size
+
+
+
+# https://stackoverflow.com/questions/28035831/how-to-build-a-crossword-like-plot-for-a-boolean-matrix
+
+par(mar=rep(0, 4))
+o <- cbind(c(row(d)), c(col(d))) - 1
+o1 <- o[, 1]
+o2 <- o[, 2]
+o3 <- o[, 1] + 1
+o4 <- o[, 2] + 1
+
+
+             
+prevs <- list()
+dir.create("plts", showWarnings = FALSE)
+for(i in seq_len(4000)) {
+  # plot
+  fname <- paste0("plts/plt_", sprintf("%05.0f", i), ".png")
+  png(fname, width = plt_size, height = plt_size, antialias = "none")
+  plot.new()
+  plot.window(xlim=c(0, ncol(d)), ylim=c(0, nrow(d)), asp=1)
+  rect(o1, o2, o3, o4, col=t(d)[, ncol(d):1], border = FALSE)
+  dev.off()
+  # # check for cycling (approximate)
+  # code <- sum(d*cm)
+  # dup <- FALSE
+  # for(previ in prevs) {
+  #   if(abs(code-previ)<1.0e-5) {
+  #     dup <- TRUE
+  #   }
+  # }
+  # if(dup) {
+  #   break
+  # }
+  # prevs <- c(prevs, d)
+  # if(length(prevs)>6) {
+  #   prevs <- prevs[-1]
+  # }
+  # advance
+  d <- life_step(d)
+}
+setwd("plts")
+plts <- sort(list.files(".", "^.*\\.png$"))
+system2("convert", args = c(plts, c("-loop", "0", "../glider_gun3.gif")))
+setwd("..")
+
+```
+
+![](glider_gun3.gif)
+
